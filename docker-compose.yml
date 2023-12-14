@@ -1,0 +1,37 @@
+version: '3'
+services:
+  api:
+    container_name: api
+    restart: always
+    build: .
+    expose:
+      - ${PORT}
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    networks:
+      - shared-network
+
+  db:
+    container_name: postgres
+    image: postgres
+    restart: always
+    ports:
+      - '${PG_PORT}:${PG_PORT}'
+    volumes:
+      - data:/data/db
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_DB=${PG_DB}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+    networks:
+      - shared-network
+
+volumes:
+  data: {}
+
+networks:
+  shared-network:
